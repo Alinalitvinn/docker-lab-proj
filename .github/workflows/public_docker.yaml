@@ -27,3 +27,4 @@ jobs:
 
       - name: Run tests in Docker container
         run: docker run ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest
+ 
