@@ -1,0 +1,29 @@
+name: Docker Image
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Login to GitHub
+        run: docker login --username ${{ secrets.USR_NAME }} --password ${{ secrets.USR_PASS }} ghcr.io
+      
+      - name: Build Main Docker image
+        run: docker build . --tag ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest
+      
+      - name: Push Main Docker image to GitHub Container Registry
+        run: docker push ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest
+
+      - name: Build Test Docker image
+        run: docker build -t ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest -f Dockerfile.test .
+
+      - name: Push Test Docker image to GitHub Container Registry
+        run: docker push ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest
+
+      - name: Run tests in Docker container
+        run: docker run ghcr.io/${{ secrets.DOCKER_NAME }}/docker-modprog:latest
